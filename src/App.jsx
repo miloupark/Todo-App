@@ -6,9 +6,9 @@ import TodoHeader from "./components/TodoHeader";
 
 function App() {
   const [todoList, setTodoList] = useState([
-    { id: 0, content: "123" },
-    { id: 1, content: "코딩 공부하기" },
-    { id: 2, content: "잠 자기" },
+    { id: 0, content: "react todo", completed: false },
+    { id: 1, content: "learning js", completed: false },
+    { id: 2, content: "zzz..", completed: false },
   ]);
 
   return (
@@ -24,23 +24,31 @@ function App() {
 function TodoInput({ todoList, setTodoList }) {
   const [inputValue, setInputValue] = useState("");
 
+  const addTodo = () => {
+    const todotext = inputValue.trim(); // 공백 방지
+    if (!todotext) {
+      alert("할 일을 입력해주세요");
+      return;
+    }
+    const newTodo = { id: Number(new Date()), content: inputValue, completed: false };
+    const newTodoList = [...todoList, newTodo];
+    setTodoList(newTodoList);
+    setInputValue("");
+  };
+
   return (
     <>
+      <label className="a11y-hidden" htmlFor="todo-input">
+        오늘의 할 일
+      </label>
       <input
+        id="todo-input"
+        type="text"
         placeholder="오늘의 할 일"
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
       />
-      <button
-        onClick={() => {
-          const newTodo = { id: Number(new Date()), content: inputValue };
-          const newTodoList = [...todoList, newTodo];
-          setTodoList(newTodoList);
-          setInputValue("");
-        }}
-      >
-        추가하기
-      </button>
+      <button onClick={addTodo}>추가하기</button>
     </>
   );
 }
@@ -72,7 +80,7 @@ function Todo({ todo, setTodoList }) {
   const saveEdit = () => {
     const isInputEdit = inputValue.trim();
 
-    // 입력이 없거나, 기존 투두의 내용과 같으면 닫기
+    // 입력이 없거나, 기존 내용과 같으면 닫기
     if (!isInputEdit || isInputEdit === todo.content) {
       setIsEdit(false);
       setInputValue("");
@@ -87,8 +95,20 @@ function Todo({ todo, setTodoList }) {
     cancelEdit();
   };
 
+  const checkTodo = (checked) => {
+    setTodoList((prev) => {
+      return prev.map((el) => (el.id === todo.id ? { ...el, completed: checked } : el));
+    });
+  };
+
   return (
     <li>
+      <input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={(event) => checkTodo(event.target.checked)}
+      />
+
       {isEdit ? (
         <>
           <input
