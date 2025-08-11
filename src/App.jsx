@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
-
 import { useState } from "react";
 import "./App.css";
 import TodoHeader from "./components/TodoHeader";
 
 function App() {
   const [todoList, setTodoList] = useState([
-    { id: 0, content: "react todo", completed: false },
-    { id: 1, content: "learning js", completed: false },
-    { id: 2, content: "zzz..", completed: false },
+    { id: 0, content: "React Todo APP", completed: false },
+    { id: 1, content: "React Assignment", completed: false },
+    { id: 2, content: "React Basic", completed: false },
   ]);
 
   return (
@@ -16,7 +15,9 @@ function App() {
       <TodoHeader />
       <TodoList todoList={todoList} setTodoList={setTodoList} />
       <hr />
-      <TodoInput todoList={todoList} setTodoList={setTodoList} />
+      <div className="todo-add">
+        <TodoInput todoList={todoList} setTodoList={setTodoList} />
+      </div>
     </>
   );
 }
@@ -48,14 +49,16 @@ function TodoInput({ todoList, setTodoList }) {
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
       />
-      <button onClick={addTodo}>추가하기</button>
+      <button className="btn-add" type="button" onClick={addTodo}>
+        <img src="/icons/plus.svg" alt="추가" />
+      </button>
     </>
   );
 }
 
 function TodoList({ todoList, setTodoList }) {
   return (
-    <ul>
+    <ul className="todo-list">
       {todoList.map((todo) => (
         <Todo key={todo.id} todo={todo} setTodoList={setTodoList} />
       ))}
@@ -112,27 +115,34 @@ function Todo({ todo, setTodoList }) {
       {isEdit ? (
         <>
           <input
+            className="input-edit"
             placeholder={todo.content}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
           />
-          <button onClick={saveEdit}>저장</button>
+          <button className="btn-save" type="button" onClick={saveEdit}>
+            <img src="/icons/check.svg" alt="저장" />
+          </button>
         </>
       ) : (
         <>
-          {todo.content}
-          <button onClick={startEdit}>수정</button>
+          <span className="todo-text">{todo.content}</span>
+          <button className="btn-edit" type="button" onClick={startEdit} disabled={todo.completed}>
+            <img src="/icons/edit.svg" alt="수정" />
+          </button>
         </>
       )}
 
       <button
+        className="btn-del"
+        type="button"
         onClick={() => {
           setTodoList((prev) => {
             return prev.filter((el) => el.id !== todo.id);
           });
         }}
       >
-        삭제
+        <img src="/icons/minus.svg" alt="삭제" />
       </button>
     </li>
   );
