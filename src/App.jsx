@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import TodoHeader from "./components/TodoHeader";
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -10,6 +11,7 @@ function App() {
 
   return (
     <>
+      <TodoHeader />
       <TodoList todoList={todoList} setTodoList={setTodoList} />
       <hr />
       <TodoInput todoList={todoList} setTodoList={setTodoList} />
@@ -22,10 +24,7 @@ function TodoInput({ todoList, setTodoList }) {
 
   return (
     <>
-      <input
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-      />
+      <input value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
       <button
         onClick={() => {
           const newTodo = { id: Number(new Date()), content: inputValue };
@@ -55,16 +54,11 @@ function Todo({ todo, setTodoList }) {
   return (
     <li>
       {todo.content}
-      <input
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-      />
+      <input value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
       <button
         onClick={() => {
           setTodoList((prev) =>
-            prev.map((el) =>
-              el.id === todo.id ? { ...el, content: inputValue } : el
-            )
+            prev.map((el) => (el.id === todo.id ? { ...el, content: inputValue } : el))
           );
         }}
       >
