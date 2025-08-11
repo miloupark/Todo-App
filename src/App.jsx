@@ -26,7 +26,11 @@ function TodoInput({ todoList, setTodoList }) {
 
   return (
     <>
-      <input value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
+      <input
+        placeholder="오늘의 할 일"
+        value={inputValue}
+        onChange={(event) => setInputValue(event.target.value)}
+      />
       <button
         onClick={() => {
           const newTodo = { id: Number(new Date()), content: inputValue };
@@ -53,19 +57,54 @@ function TodoList({ todoList, setTodoList }) {
 
 function Todo({ todo, setTodoList }) {
   const [inputValue, setInputValue] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+
+  const startEdit = () => {
+    setIsEdit(true);
+    setInputValue("");
+  };
+
+  const cancelEdit = () => {
+    setIsEdit(false);
+    setInputValue("");
+  };
+
+  const saveEdit = () => {
+    const isInputEdit = inputValue.trim();
+
+    // 입력이 없거나, 기존 투두의 내용과 같으면 닫기
+    if (!isInputEdit || isInputEdit === todo.content) {
+      setIsEdit(false);
+      setInputValue("");
+      return;
+    }
+
+    // 투두의 내용 변경 시 업데이트
+    setTodoList((prev) => {
+      return prev.map((el) => (el.id === todo.id ? { ...el, content: isInputEdit } : el));
+    });
+
+    cancelEdit();
+  };
+
   return (
     <li>
-      {todo.content}
-      <input value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
-      <button
-        onClick={() => {
-          setTodoList((prev) =>
-            prev.map((el) => (el.id === todo.id ? { ...el, content: inputValue } : el))
-          );
-        }}
-      >
-        수정
-      </button>
+      {isEdit ? (
+        <>
+          <input
+            placeholder={todo.content}
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+          />
+          <button onClick={saveEdit}>저장</button>
+        </>
+      ) : (
+        <>
+          {todo.content}
+          <button onClick={startEdit}>수정</button>
+        </>
+      )}
+
       <button
         onClick={() => {
           setTodoList((prev) => {
